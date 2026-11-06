@@ -274,8 +274,8 @@ const estLista = k => S[k].filter(x => x.v && (x.v !== '__otro' || String(x.t ||
 const V = {
   inicio: () => `<p class="intro">${OF ? 'Ustedes también vivieron su proceso con nosotros. Este registro nos ayuda a mantenernos conectados y a celebrar tu cumpleaños con la tribu.' : 'Este registro nos ayuda a mantenernos conectados, celebrar tu cumpleaños y avisarte de todo lo que pasa en la tribu.'}</p><div class="aviso">Te toma unos 3 minutos. Ten a mano de 1 a 3 fotos tuyas.</div>`,
   rol: () => { const r = ROLES.find(x => x[0] === S.rol); return campo('rol', OF ? '¿Cuál es tu cargo?' : '¿Cuál es tu rol en Henko?', sel('rol', ROLES.map(x => [x[0], x[0]]), S.rol, "S.rol=this.value;pintar()", OF ? 'Elige tu cargo' : 'Elige tu rol'), r ? r[1] : ''); },
-  datos: () => campo('nombre', 'Tu nombre', entrada('nombre', 'text', 'Juan Luis', 'autocomplete="given-name" autocapitalize="words"'))
-    + campo('apellidos', 'Tus apellidos', entrada('apellidos', 'text', 'Fortuna', 'autocomplete="family-name" autocapitalize="words"'))
+  datos: () => campo('nombre', 'Tu nombre', entrada('nombre', 'text', 'María José', 'autocomplete="given-name" autocapitalize="words"'))
+    + campo('apellidos', 'Tus apellidos', entrada('apellidos', 'text', 'Pérez Gómez', 'autocomplete="family-name" autocapitalize="words"'))
     + campo('sexo', 'Sexo', sel('sexo', [['F', 'Femenino'], ['M', 'Masculino']], S.sexo, "S.sexo=this.value;pintar()"))
     + `<div class="f"><span class="lb">¿Cuándo naciste?</span>${selFecha('S.dob', S.dob, 1930, AN - 15)}<p class="vista" id="v_dob"></p><p class="er" id="e_dob"></p></div>`
     + campo('correo', 'Tu correo', entrada('correo', 'email', 'nombre@hotmail.com', 'autocomplete="email" autocapitalize="off" spellcheck="false"'), 'Cualquier correo: Gmail, Hotmail, Outlook, iCloud…')
@@ -306,7 +306,7 @@ const V = {
     h += `<div class="f"><label class="check"><input type="checkbox" ${S.conf ? 'checked' : ''} onchange="S.conf=this.checked;suave()"><span>Confirmo que esta es mi Visión y mi Tribu</span></label><p class="er" id="e_conf"></p></div>`;
     return h;
   },
-  contrato: () => campo('contrato', `<span style="font-size:18px">${prefijo()}…</span>`, entrada('contrato', 'text', S.sexo === 'F' ? 'Amorosa, Responsable y Feliz' : 'Amoroso, Responsable y Feliz', 'autocapitalize="words"'), 'Escribe las palabras de tu contrato tal como lo declaraste') + `<div class="pv" id="v_ct"></div>`,
+  contrato: () => campo('contrato', `<span style="font-size:18px">${prefijo()}…</span>`, entrada('contrato', 'text', 'Valiente, Alegre y Libre', 'autocapitalize="words"'), 'Escribe las palabras de tu contrato tal como lo declaraste') + `<div class="pv" id="v_ct"></div>`,
   proceso: () => {
     let h = estiramientos('estTA', '¿Cuál fue tu estiramiento en el Taller Avanzado?') + estiramientos('est2', '¿Y en el 2do Fin de Semana?');
     if (!esLider()) return h;
