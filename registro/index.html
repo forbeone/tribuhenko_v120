@@ -225,13 +225,13 @@ function pasos(){
 
 function saludo(){
   const n = primerNombre(), F = S.sexo === 'F';
-  if (OF) return n;
-  if (S.rol === 'Senior') return 'Senior ' + n;
-  return 'Líder ' + n;
+  return n;
 }
 const prefijo = () => S.sexo === 'F' ? 'Yo soy una Mujer' : 'Yo soy un Hombre';
 const sinPrefijo = s => { let t = String(s || '').trim(); for (let i = 0; i < 2; i++) t = t.replace(/^(yo\s+)?soy\s+(un|una)\s+(hombre|mujer)\s*[,:]?\s*/i, ''); return t; };
-const contrato = () => prefijo() + ' ' + cap(sinPrefijo(S.contrato));
+const CON = ['a','al','de','del','el','la','las','lo','los','que','y','e','o','u','en','con','para','por','sin','mi','mis','su','sus','tu','tus','un','una','unos','unas','se','me','te','le','les','nos','como'];
+const capC = s => String(s || '').trim().replace(/\s+,/g, ',').replace(/,(?=\S)/g, ', ').replace(/\s+/g, ' ').toLowerCase().split(' ').filter(Boolean).map(w => CON.includes(w) ? w : w.replace(/^([^a-záéíóúüñ]*)([a-záéíóúüñ])/, (x, a, b) => a + b.toUpperCase())).join(' ');
+const contrato = () => prefijo() + ' ' + capC(sinPrefijo(S.contrato));
 function fechaOk(o){ if(!o || !o.d || !o.m || !o.y) return false; const f = new Date(+o.y, o.m-1, +o.d); return f.getDate() == o.d && f.getMonth() == o.m-1 && f <= HOY; }
 function edad(o){ let a = AN - o.y; const m = HOY.getMonth()+1; if (m < o.m || (m == o.m && HOY.getDate() < o.d)) a--; return a; }
 const iso = o => o.y + '-' + String(o.m).padStart(2,'0') + '-' + String(o.d).padStart(2,'0');
