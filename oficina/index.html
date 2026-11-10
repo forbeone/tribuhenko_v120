@@ -56,9 +56,15 @@ h1{font-size:22px;line-height:1.25;font-weight:700;margin:0 0 6px}
 .er:empty,.vista:empty,.ayuda:empty{display:none}
 input[type=text],input[type=email],input[type=tel],input[type=number],select{width:100%;height:48px;padding:0 14px;font:inherit;font-size:16px;color:var(--tx);background:var(--in);border:1.5px solid var(--bd2);border-radius:12px;outline:none;-webkit-appearance:none;appearance:none}
 select{background-image:linear-gradient(45deg,transparent 50%,var(--tx3) 50%),linear-gradient(135deg,var(--tx3) 50%,transparent 50%);background-position:calc(100% - 18px) 21px,calc(100% - 13px) 21px;background-size:5px 5px;background-repeat:no-repeat;padding-right:34px}
-input,select{transition:border-color .2s,box-shadow .2s}
-input:focus,select:focus{border-color:var(--rojo);box-shadow:0 0 0 3px var(--suave)}
-input.mal,select.mal{border-color:var(--err)}
+textarea{width:100%;min-height:76px;padding:12px 14px;font:inherit;font-size:16px;line-height:1.45;color:var(--tx);background:var(--in);border:1.5px solid var(--bd2);border-radius:12px;outline:none;resize:vertical;display:block}
+input,select,textarea{transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--rojo);box-shadow:0 0 0 3px var(--suave)}
+input.mal,select.mal,textarea.mal{border-color:var(--err)}
+.roles{margin:-6px 0 6px;padding:12px 14px;border-radius:12px;background:var(--in);border:1px solid var(--bd)}
+.roles p{margin:0;padding:5px 0;font-size:13.5px;line-height:1.45;color:var(--tx3)}
+.roles p b{color:var(--tx2)}
+.roles p.on{color:var(--tx)}
+.roles p.on b{color:var(--rojo)}
 .er:not(:empty){animation:funde .2s ease both}
 button:focus-visible,.slot:focus-within{outline:3px solid var(--rojo);outline-offset:2px}
 h1:focus{outline:none}
@@ -194,8 +200,8 @@ const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto'
 const PAISES = [['República Dominicana','+1',10,10,1],['Alemania','+49',10,11],['Argentina','+54',10,10],['Aruba','+297',7,7],['Bolivia','+591',8,8],['Brasil','+55',10,11],['Canadá','+1',10,10],['Chile','+56',9,9],['Colombia','+57',10,10],['Costa Rica','+506',8,8],['Cuba','+53',8,8],['Curazao','+599',7,8],['Ecuador','+593',9,9],['El Salvador','+503',8,8],['España','+34',9,9],['Estados Unidos','+1',10,10],['Francia','+33',9,9],['Guatemala','+502',8,8],['Haití','+509',8,8],['Honduras','+504',8,8],['Italia','+39',9,10],['México','+52',10,10],['Nicaragua','+505',8,8],['Países Bajos','+31',9,9],['Panamá','+507',8,8],['Paraguay','+595',9,9],['Perú','+51',9,9],['Portugal','+351',9,9],['Puerto Rico','+1',10,10],['Reino Unido','+44',10,10],['Suiza','+41',9,9],['Uruguay','+598',8,8],['Venezuela','+58',10,10]];
 const DOMINIOS = ['gmail.com','hotmail.com','outlook.com','yahoo.com','icloud.com','live.com','hotmail.es','yahoo.es'];
 const ROLES = OF
-  ? [['Coordinador del PL','Coordiné el Programa de Liderazgo'],['Entrenador','Entrené a la Tribu Henko'],['Personal administrativo','Apoyé desde la oficina del centro']]
-  : [['Líder','Soy de la Tribu Henko V-120'],['Senior','Acompañé a Henko como Senior'],['SVT','Serví en el Monte de Henko']];
+  ? [['Coordinador del PL','Coordinaste o coordinas el PL.'],['Entrenador','Le diste a Henko alguna etapa de su proceso.'],['Personal administrativo','Trabajas en la oficina de VIVE.']]
+  : [['Líder','Hiciste tu proceso en Henko V-120.'],['Senior','Eres de otra tribu y fuiste Senior de Henko.'],['SVT','Eres de otra tribu y serviste en nuestro proceso.']];
 const TIT = {inicio: OF ? 'Registro del Equipo VIVE' : 'Registro de Líderes', rol: OF ? '¿Cuál es tu cargo?' : '¿Quién eres?', datos:'Tus datos', sobre:'Sobre ti', tribu:'Tu tribu', contrato:'Tu contrato', proceso:'Tu proceso', fotos:'Tus fotos', revisa:'Revisa y envía', fin:''};
 
 let S = {pais:0, dob:{}, kids:[], estTA:[], est2:[], f:[null,null,null], buscaV:''};
@@ -209,7 +215,9 @@ const esLider = () => !OF && S.rol === 'Líder';
 const primerNombre = () => cap(S.nombre);
 function lev(a,b){let p=Array.from({length:b.length+1},(_,j)=>j);for(let i=1;i<=a.length;i++){const c=[i];for(let j=1;j<=b.length;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[b.length]}
 
+const esEntrenador = () => OF && S.rol === 'Entrenador';
 function pasos(){
+  if (esEntrenador()) return ['inicio','rol','datos','tribu','contrato','fotos','revisa','fin'];
   const p = ['inicio','rol','datos','sobre'];
   if (S.rol && (OF || S.rol !== 'Líder')) p.push('tribu');
   return p.concat(['contrato','proceso','fotos','revisa','fin']);
@@ -217,12 +225,13 @@ function pasos(){
 
 function saludo(){
   const n = primerNombre(), F = S.sexo === 'F';
-  if (OF) return S.rol === 'Entrenador' ? (F ? 'Entrenadora ' : 'Entrenador ') + n : S.rol === 'Coordinador del PL' ? (F ? 'Coordinadora ' : 'Coordinador ') + n : n;
+  if (OF) return n;
   if (S.rol === 'Senior') return 'Senior ' + n;
   return 'Líder ' + n;
 }
 const prefijo = () => S.sexo === 'F' ? 'Yo soy una Mujer' : 'Yo soy un Hombre';
-const contrato = () => prefijo() + ' ' + cap(S.contrato);
+const sinPrefijo = s => { let t = String(s || '').trim(); for (let i = 0; i < 2; i++) t = t.replace(/^(yo\s+)?soy\s+(un|una)\s+(hombre|mujer)\s*[,:]?\s*/i, ''); return t; };
+const contrato = () => prefijo() + ' ' + cap(sinPrefijo(S.contrato));
 function fechaOk(o){ if(!o || !o.d || !o.m || !o.y) return false; const f = new Date(+o.y, o.m-1, +o.d); return f.getDate() == o.d && f.getMonth() == o.m-1 && f <= HOY; }
 function edad(o){ let a = AN - o.y; const m = HOY.getMonth()+1; if (m < o.m || (m == o.m && HOY.getDate() < o.d)) a--; return a; }
 const iso = o => o.y + '-' + String(o.m).padStart(2,'0') + '-' + String(o.d).padStart(2,'0');
@@ -232,6 +241,7 @@ function sugerencia(e){ const m = /^([^@\s]+)@([^@\s]+)$/.exec(String(e || '').t
 function tribu(){
   if (esLider()) return 'Tribu Henko V-120';
   if (S.vis === 'no') return S.visT && S.visN ? 'Tribu ' + cap(S.visT) + ' V-' + S.visN : '';
+  if (S.vis === 'otro') return cap(S.visO);
   const v = D.visiones.find(x => String(x[0]) === String(S.vis));
   return v ? 'Tribu ' + v[1] + ' V-' + v[0] : '';
 }
@@ -273,7 +283,8 @@ const estLista = k => S[k].filter(x => x.v && (x.v !== '__otro' || String(x.t ||
 // ---------- pasos ----------
 const V = {
   inicio: () => `<p class="intro">${OF ? 'Ustedes también vivieron su proceso con nosotros. Este registro nos ayuda a mantenernos conectados y a celebrar tu cumpleaños con la tribu.' : 'Este registro nos ayuda a mantenernos conectados, celebrar tu cumpleaños y avisarte de todo lo que pasa en la tribu.'}</p><div class="aviso">Te toma unos 3 minutos. Ten a mano de 1 a 3 fotos tuyas.</div>`,
-  rol: () => { const r = ROLES.find(x => x[0] === S.rol); return campo('rol', OF ? '¿Cuál es tu cargo?' : '¿Cuál es tu rol en Henko?', sel('rol', ROLES.map(x => [x[0], x[0]]), S.rol, "S.rol=this.value;pintar()", OF ? 'Elige tu cargo' : 'Elige tu rol'), r ? r[1] : ''); },
+  rol: () => campo('rol', OF ? '¿Cuál es tu cargo?' : '¿Cuál es tu rol en Henko?', sel('rol', ROLES.map(x => [x[0], x[0]]), S.rol, "S.rol=this.value;pintar()", OF ? 'Elige tu cargo' : 'Elige tu rol'))
+    + `<div class="roles" aria-label="Qué significa cada ${OF ? 'cargo' : 'rol'}">${ROLES.map(r => `<p class="${S.rol === r[0] ? 'on' : ''}"><b>${esc(r[0])}:</b> ${esc(r[1])}</p>`).join('')}</div>`,
   datos: () => campo('nombre', 'Tu nombre', entrada('nombre', 'text', 'María José', 'autocomplete="given-name" autocapitalize="words"'))
     + campo('apellidos', 'Tus apellidos', entrada('apellidos', 'text', 'Pérez Gómez', 'autocomplete="family-name" autocapitalize="words"'))
     + campo('sexo', 'Sexo', sel('sexo', [['F', 'Femenino'], ['M', 'Masculino']], S.sexo, "S.sexo=this.value;pintar()"))
@@ -299,14 +310,15 @@ const V = {
     return h;
   },
   tribu: () => {
-    const ops = D.visiones.map(v => [v[0], 'V-' + v[0] + ' · ' + v[1]]).concat([['no', 'Mi Visión no aparece, la escribo']]);
-    let h = campo('vis', '¿De qué Visión eres?', sel('vis', ops, S.vis, "S.vis=this.value;pintar()", 'Elige tu Visión'), S.vis === 'no' ? 'La vamos a confirmar y agregar a la lista.' : '');
+    const ops = D.visiones.map(v => [v[0], 'V-' + v[0] + ' · ' + v[1]]).concat([['no', 'Mi Visión no aparece, la escribo']]).concat(OF ? [['otro', 'Hice mi proceso en otro lugar, lo escribo']] : []);
+    let h = campo('vis', OF ? '¿Dónde hiciste tu proceso?' : '¿De qué Visión eres?', sel('vis', ops, S.vis, "S.vis=this.value;pintar()", 'Elige tu Visión'), S.vis === 'no' ? 'La vamos a confirmar y agregar a la lista.' : '');
+    if (S.vis === 'otro') h += campo('visO', '¿Dónde lo hiciste y cómo se llama tu tribu?', `<textarea id="visO" rows="2" maxlength="160" placeholder="Ej.: VIVE Puerto Rico, Tribu Aurora" oninput="S.visO=this.value;suave()">${esc(S.visO)}</textarea>`);
     if (S.vis === 'no') h += campo('visN', 'Número de tu Visión', `<input id="visN" type="number" inputmode="numeric" min="1" max="119" placeholder="105" value="${esc(S.visN)}" oninput="S.visN=this.value;suave()">`, 'Del 1 al 119') + campo('visT', 'Nombre de tu tribu', entrada('visT', 'text', 'Sirius', 'autocapitalize="words"'));
     h += `<div class="pv" id="v_tr" style="margin:0 0 16px"></div>`;
-    h += `<div class="f"><label class="check"><input type="checkbox" ${S.conf ? 'checked' : ''} onchange="S.conf=this.checked;suave()"><span>Confirmo que esta es mi Visión y mi Tribu</span></label><p class="er" id="e_conf"></p></div>`;
+    h += `<div class="f"><label class="check"><input type="checkbox" ${S.conf ? 'checked' : ''} onchange="S.conf=this.checked;suave()"><span>${S.vis === 'otro' ? 'Confirmo que este es mi proceso y mi tribu' : 'Confirmo que esta es mi Visión y mi Tribu'}</span></label><p class="er" id="e_conf"></p></div>`;
     return h;
   },
-  contrato: () => campo('contrato', `<span style="font-size:18px">${prefijo()}…</span>`, entrada('contrato', 'text', 'Valiente, Alegre y Libre', 'autocapitalize="words"'), 'Escribe las palabras de tu contrato tal como lo declaraste') + `<div class="pv" id="v_ct"></div>`,
+  contrato: () => campo('contrato', `<span style="font-size:18px">${prefijo()}…</span>`, `<textarea id="contrato" rows="3" maxlength="400" autocapitalize="words" placeholder="Valiente, Alegre y Libre" oninput="S.contrato=this.value;suave()">${esc(S.contrato)}</textarea>`, 'Escribe las palabras de tu contrato tal como lo declaraste') + `<div class="pv" id="v_ct"></div>`,
   proceso: () => {
     let h = estiramientos('estTA', '¿Cuál fue tu estiramiento en el Taller Avanzado?') + estiramientos('est2', '¿Y en el 2do Fin de Semana?');
     if (!esLider()) return h;
@@ -447,8 +459,9 @@ function validar(pg){
   }
   if (pg === 'tribu') {
     if (!S.vis) b |= mal('vis', 'Elige tu Visión');
+    if (S.vis === 'otro' && !String(S.visO || '').trim()) b |= mal('visO', 'Escribe dónde hiciste tu proceso y tu tribu');
     if (S.vis === 'no') { const n = +S.visN; if (!(n >= 1 && n <= 119)) b |= mal('visN', 'Del 1 al 119'); if (!String(S.visT || '').trim()) b |= mal('visT', 'Escribe el nombre de tu tribu'); }
-    if (!S.conf) b |= mal('conf', 'Confirma tu Visión y tu Tribu');
+    if (!S.conf) b |= mal('conf', S.vis === 'otro' ? 'Confirma tu proceso y tu tribu' : 'Confirma tu Visión y tu Tribu');
   }
   if (pg === 'contrato' && !String(S.contrato || '').trim()) b |= mal('contrato', 'Escribe tu contrato');
   if (pg === 'proceso') {
@@ -501,8 +514,8 @@ function enviar(){
     correo: String(S.correo || '').trim(), codigo: PAISES[S.pais][1], wa: S.wa, ig: S.ig, color: S.color,
     pareja: S.pareja || '', parejaNombre: S.parejaNombre || '', hijos: S.hijos || '',
     kids: S.hijos === 'si' ? S.kids.map(k => ({n: k.n, s: k.s, f: fechaOk(k) ? iso(k) : ''})) : [],
-    vision: S.vis === 'no' ? {num: S.visN, nombre: S.visT} : S.vis ? {num: S.vis} : null,
-    contrato: S.contrato, estTA: estLista('estTA'), est2: estLista('est2'), aprecio: ap,
+    vision: S.vis === 'otro' ? {otro: S.visO} : S.vis === 'no' ? {num: S.visN, nombre: S.visT} : S.vis ? {num: S.vis} : null,
+    contrato: sinPrefijo(S.contrato), estTA: esEntrenador() ? [] : estLista('estTA'), est2: esEntrenador() ? [] : estLista('est2'), aprecio: ap,
     fotos: S.f.filter(Boolean).map(d => ({data: d})), web: $('web').value,
   };
   const fallo = msg => { enviando = false; pintar(); $('e_gen').textContent = msg || 'No pudimos enviar tu registro. Revisa tu conexión e intenta de nuevo.'; };
