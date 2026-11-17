@@ -1,9 +1,8 @@
-# Tribu Henko V-120
+# Tribu Henko V-120 (se mudó)
 
-Páginas de la Tribu Henko V-120 (VIVE Liderazgo).
+La web de la Tribu Henko V-120 ahora está en https://tribuhenko.github.io/
 
-- Registro de la tribu (Líder, Senior, SVT): https://forbeone.github.io/tribuhenko_v120/registro/
-- Registro de la Oficina (Coordinador del PL, Entrenador, Personal administrativo): https://forbeone.github.io/tribuhenko_v120/oficina/
+- Registro de la tribu: https://tribuhenko.github.io/registro/
+- Registro de la Oficina: https://tribuhenko.github.io/oficina/
 
-La página guarda los registros en el Apps Script de la cuenta de la tribu. Este repositorio
-no tiene datos de nadie: la lista de líderes, la base de datos y las fotos viven en Google.
+Estas páginas solo redirigen a la dirección nueva, para que los links que ya se compartieron sigan funcionando.
